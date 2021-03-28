@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
+    <title>accounts</title>
+    <script>
+      // даём юзеру выбрать аккаунт
+      function statusChangeCallback()
+      {
+        // достаём из куки имена и аватары пользователей
+        console.log('COOKIE: Поиск имени пользователя');
+        console.log('COOKIE: Поиск аватара пользователя');                                           // TODO: сначала надо скрыть все блоки с user_id, user_avatar
+        // максимум может быть 5 аккаунтов по правилам FB/INSTA
+        for (let i = 0; i < 5; i++)
+        {
+          // ключи, по которым будем вытягивать нужную куку с именем и авой
+          var name_key = 'userName' + i.toString();
+          var avatar_key = 'userAvatar' + i.toString();
+          // сохраним полученные элементы
+          var name = Cookies.get(name_key);
+          var avatar = Cookies.get(avatar_key);
+          // если они не пустые (мб там меньше 5 аккаунтов, тогда тут будет пусто)
+          if (name)
+          {
+            console.log('NAME: ' + name);
+            var name_id = "user_name_" + i.toString();
+            document.getElementById(name_id).innerHTML = name;
+          }
+          else
+          {
+            break; //если получаем пустую куку, то дальше ничего уже нет
+          }
+          if (avatar)
+          {
+            console.log('AVATAR: ' + avatar);
+            var avatar_id = "user_avatar_" + i.toString();
+            document.getElementById(avatar_id).src = /*avatar*/'https://scontent-hel3-1.xx.fbcdn.net/v/t51.2885-15/163593891_493398268459277_8667565098807900007_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=86c713&_nc_ohc=KdxBeAL5PT4AX8iaaI7&_nc_oc=AQmk1KMJ5qrENaw8JSyi17erUnV2WOl281q1BXo-uolPPBVz0I59Gr-GfKIW9HmSr3s&_nc_ht=scontent-hel3-1.xx&oh=219679a2c61e1c93e04df5f87624e917&oe=6087D22D';
+          }
+        }                                                                                                   // TODO: теперь отображаем заполненные блоки
+      }
+      // перенаправляем его на authorized
+      function redirectAuthorized(username_id, user_avatar_id)
+      {
+        // берём имя и аватар из содержания блока
+        var name = document.getElementById(username_id).innerHTML;
+        var avatar = document.getElementById(user_avatar_id).src;
+        console.log('SELECTED NAME: ' + name);
+        console.log('SELECTED AVATAR: ' + avatar);
+        // закидываем в куки, чтобы достать на authorized
+        Cookies.set('selectedUserName', name, { path: '/', domain: 'zandau.kz', secure: true});
+        Cookies.set('selectedUserAvatar', avatar, { path: '/', domain: 'zandau.kz', secure: true});
+        // почистим старые куки - нам больше они не нужны
+        for (let i = 0; i < 5; i++)                                                             // TODO: отсюда ещё нужно будет вытащить всю информацию про подписчиков и прочую хуйню
+        {
+          var name_key = 'userName' + i.toString();
+          var avatar_key = 'userAvatar' + i.toString();
+          Cookies.remove(name_key);
+          Cookies.remove(avatar_key);
+        }
+        // перенаправляем пользователя на страницу authorized
+        console.log('REDIRECT: Пользователь будет перенаправлен на authorized');
+        window.location.href = 'authorized.html';
+      }
+      // подгужаем SDK
+      window.fbAsyncInit = function()
+      {
+        FB.init({
+            appId: '1103215670180535',
+            cookie: true,
+            xfbml: true,
+            version: 'v10.0'
+        });
+        console.log('SDK ready');
+        statusChangeCallback();
+      };
+    </script>
+</head>
+<body>
+  <ul class="accounts">
+    <!--Первый аккаунт-->
+    <li>
+      <h8 id="user_name_0" onclick="redirectAuthorized('user_name_0', 'user_avatar_0')">
+        <img id="user_avatar_0" src="" alt="avatar_0">
+      </h8>
+    </li>
+    <!--Второй аккаунт-->
+    <li>
+      <h8 id="user_name_1" onclick="redirectAuthorized('user_name_1', 'user_avatar_1')">
+        <img id="user_avatar_1" src="" alt="avatar_1">
+      </h8>
+    </li>
+    <!--Третий аккаунт-->
+    <li>
+      <h8 id="user_name_2" onclick="redirectAuthorized('user_name_2', 'user_avatar_2')">
+        <img id="user_avatar_2" src="" alt="avatar_2">
+      </h8>
+    </li>
+    <!--Четвёртый аккаунт-->
+    <li>
+      <h8 id="user_name_3" onclick="redirectAuthorized('user_name_3', 'user_avatar_3')">
+        <img id="user_avatar_3" src="" alt="avatar_3">
+      </h8>
+    </li>
+    <!--Пятый аккаунт-->
+    <li>
+      <h8 id="user_name_4" onclick="redirectAuthorized('user_name_4', 'user_avatar_4')">
+        <img id="user_avatar_4" src="" alt="avatar_4">
+      </h8>
+    </li>
+  </ul>
+  <!--русскоязычная локализация SDK-->
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
+</body>
+</html>

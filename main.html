@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;0,700;0,900;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
+    <title>main</title>
+    <script>
+      // получаем статус логина
+      function statusChangeCallback(response)
+      {
+        console.log('INFO: Получены данные о пользователе');
+        console.log(response);
+        if (response.status === 'connected')
+        {
+            console.log('STATUS: connected');
+            // Получаем FB имя вошедшего пользователя
+            FB.api('/me', function(response)
+            {
+                console.log('ENTER: Пользователь зашёл');
+                console.log('FB NAME: ' + response.name);
+                // Получим ВСЕ бизнес-страницы пользователя
+                FB.api('/me/accounts', function(response)
+                {
+                    console.log('FB ACCOUNTS: Получены бизнес-страницы пользователя');
+                    console.log(response);
+                    // Получим id всех привязанных бизнес-страниц FB
+                    for (let i = 0; i < response.data.length; i++)
+                    {
+                      var currentID_FB = response.data[i].id;
+                      // Формируем строку запроса
+                      stringGet = '/' + currentID_FB + '?fields=instagram_business_account';
+                      FB.api(stringGet, function(response)
+                      {
+                            console.log('FB BUSINESS ACCOUNT: Получена бизнес-страница пользователя');
+                            console.log(response);
+                            // Если бизнес-страница FB привязана к Insta
+                            if (response.instagram_business_account)
+                            {
+                              // Получим id бизнес-страницы Insta
+                              console.log('INSTA BUSINESS ACCOUNT: ' + response.instagram_business_account.id);
+                              var currentID_Inst = response.instagram_business_account.id;
+                              // Формируем строку запроса
+                              stringGet = '/' + currentID_Inst + '?fields=name,profile_picture_url';
+                              FB.api(stringGet, function(response)
+                              {
+                                console.log('INSTA ACCOUNT: Получены имя и аватар');
+                                console.log(response);
+                                // Получим profile_picture_url (аватарки) и name (имена) страничек Insta
+                                var current_name = response.name;
+                                console.log('NAME: ' + current_name);
+                                var current_avatar = response.profile_picture_url;
+                                console.log('AVATAR: ' + current_avatar);                                       // TODO: здесь стащим потом всю инфу о подписках-хуисках и прочей хуйне
+                                // Закидываем всю найденную инфу в куки, чтобы потом достать её на authorized
+                                if (navigator.cookieEnabled === false)
+                                {
+                                   alert("Cookies должны быть включены!");
+                                }
+                                // запишем ключи куки с именем и авой
+                                var name_key = 'userName' + i.toString();
+                                var avatar_key = 'userAvatar' + i.toString();
+                                // бросаем в куки
+                                Cookies.set(name_key, current_name, { path: '/', domain: 'zandau.kz', secure: true});
+                                Cookies.set(avatar_key, current_avatar, { path: '/', domain: 'zandau.kz', secure: true});
+                              });
+                            }
+                      });
+                    }
+                });
+            });
+            // Перенаправляем пользователя на страницу accounts
+            console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
+            //window.location.href = 'accounts.html';
+        }
+        else
+        {
+            console.log('WARNING: Пользователь не прошёл авторизацию или она была отменена');
+        }
+      }
+
+      // обрабатываем нажатие кнопки логин
+      function checkLoginState()
+      {
+        FB.getLoginStatus(function(response)
+        {
+            statusChangeCallback(response);
+        });
+      }
+
+      // подгужаем SDK
+      window.fbAsyncInit = function()
+      {
+        FB.init({
+            appId: '1103215670180535',
+            cookie: true,
+            xfbml: true,
+            version: 'v10.0'
+        });
+        console.log('SDK: ready');
+        FB.getLoginStatus(function(response)
+        {
+            statusChangeCallback(response);
+        });
+      };
+    </script>
+</head>
+<body>
+    <main>
+        <!-- Кнопка войти через FB -->
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>                                    <!-- TODO: видоизменить стиль кнопки под инстаграм! -->
+        <div class="wrapper">
+            <h1>Выбор победителей в Instagram</h1>
+            <h2>Проводим розыгрыш быстро и эффективно</h2>
+            <form action="" class="adressform">
+                <div class="adress_input">
+                    <!--Для ссылки-->
+                    <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="">
+                    <input type="submit" value="Начать">
+                </div>
+                <p>Чтобы начать, авторизируйтесь через Instagram</p>
+            </form>
+        </div>
+    </main>
+    <!--русскоязычная локализация SDK-->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
+</body>
+</html>
