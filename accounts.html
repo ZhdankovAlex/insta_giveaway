@@ -29,8 +29,9 @@
         {
           var name_key = 'userName' + i.toString();
           var avatar_key = 'userAvatar' + i.toString();
-          Cookies.remove(name_key);
-          Cookies.remove(avatar_key);
+          Cookies.remove(name_key, { path: '/', domain: 'zandau.kz', secure: true});
+          Cookies.remove(avatar_key, { path: '/', domain: 'zandau.kz', secure: true});
+          console.log('COOKIES REMOVED: Информация об остальных аккаунтах стёрта.');
         }
         // перенаправляем пользователя на страницу authorized
         console.log('REDIRECT: Пользователь будет перенаправлен на authorized');
@@ -44,36 +45,36 @@
     <li>
       <h8 id="user_name_0" onclick="RedirectAuthorized('user_name_0', 'user_avatar_0')">
          аккаунт не найден
-        <img id="user_avatar_0" src="img/avatar.png" alt="avatar_0">
       </h8>
+      <img id="user_avatar_0" src="img/avatar.png" alt="avatar_0">
     </li>
     <!--Второй аккаунт-->
     <li>
       <h8 id="user_name_1" onclick="RedirectAuthorized('user_name_1', 'user_avatar_1')">
         аккаунт не найден
-        <img id="user_avatar_1" src="img/avatar.png" alt="avatar_1">
       </h8>
+      <img id="user_avatar_1" src="img/avatar.png" alt="avatar_1">
     </li>
     <!--Третий аккаунт-->
     <li>
       <h8 id="user_name_2" onclick="RedirectAuthorized('user_name_2', 'user_avatar_2')">
         аккаунт не найден
-        <img id="user_avatar_2" src="img/avatar.png" alt="avatar_2">
       </h8>
+      <img id="user_avatar_2" src="img/avatar.png" alt="avatar_2">
     </li>
     <!--Четвёртый аккаунт-->
     <li>
       <h8 id="user_name_3" onclick="RedirectAuthorized('user_name_3', 'user_avatar_3')">
         аккаунт не найден
-        <img id="user_avatar_3" src="img/avatar.png" alt="avatar_3">
       </h8>
+      <img id="user_avatar_3" src="img/avatar.png" alt="avatar_3">
     </li>
     <!--Пятый аккаунт-->
     <li>
       <h8 id="user_name_4" onclick="RedirectAuthorized('user_name_4', 'user_avatar_4')">
         аккаунт не найден
-        <img id="user_avatar_4" src="img/avatar.png" alt="avatar_4">
       </h8>
+      <img id="user_avatar_4" src="img/avatar.png" alt="avatar_4">
     </li>
   </ul>
   <script>
@@ -94,12 +95,10 @@
       if (name != 'undefined')
       {
         var name_id = "user_name_" + i.toString();
-        //console.log('name_id: ' + name_id);                         // DEBUG
         console.log('NAME: ' + name);
         document.getElementById(name_id).innerHTML = name;
 
         var avatar_id = "user_avatar_" + i.toString();
-        //console.log('avatar_id: ' + avatar_id);                   // DEBUG
         console.log('AVATAR: ' + avatar);
         document.getElementById(avatar_id).src = avatar;
       }

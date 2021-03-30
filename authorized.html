@@ -13,19 +13,6 @@
     <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
     <title>authorized</title>
     <script>
-      // подставляем имя вошедшего юзера
-      function statusChangeCallback()
-      {
-        // достаём из куки
-        console.log('COOKIE: Поиск имени пользователя');
-        var name = Cookies.get('selectedUserName');
-        console.log('NAME: ' + name);
-        document.getElementById("status_name").innerHTML = name;
-        console.log('COOKIE: Поиск аватара пользователя');
-        var avatar = Cookies.get('selectedUserAvatar');
-        console.log('AVATAR: ' + avatar);
-        document.getElementById("status_avatar").src = avatar;
-      }
       // обрабатываем кнопку выхода
       function Logout()
       {
@@ -38,8 +25,8 @@
                 {
                     console.log('EXIT: Пользователь вышел');
                     // сносим куки активного аккаунта
-                    Cookies.remove('selectedUserName');
-                    Cookies.remove('selectedUserAvatar');
+                    Cookies.remove('selectedUserName', { path: '/', domain: 'zandau.kz', secure: true});
+                    Cookies.remove('selectedUserAvatar', { path: '/', domain: 'zandau.kz', secure: true});
                     // перенаправляем юзера на главную
                     window.location.href = 'main.html';
                 });
@@ -52,7 +39,7 @@
               }
           });
       }
-      // подгужаем SDK - для Logout 
+      // подгужаем SDK - для Logout
       window.fbAsyncInit = function()
       {
         FB.init({
@@ -62,16 +49,13 @@
             version: 'v10.0'
         });
         console.log('SDK ready');
-        statusChangeCallback();
       };
     </script>
 </head>
 <body>
     <main>
         <div class="user">
-            <div class="avatar">
-              <h5 id="status_avatar"></h5>
-            </div>
+            <img id="status_avatar" src="img/avatar.png" alt="avatar">
             <div class="name_and_exit">
                 <h4 id="status_name"></h4>
                 <div class="exit" onclick="Logout()">Выйти</div>
@@ -116,6 +100,18 @@
             </div>
         </div>
     </main>
+    <script>
+      // подставляем имя вошедшего юзера
+      // достаём из куки
+      console.log('COOKIE: Поиск имени пользователя');
+      var name = Cookies.get('selectedUserName');
+      console.log('NAME: ' + name);
+      document.getElementById("status_name").innerHTML = name;
+      console.log('COOKIE: Поиск аватара пользователя');
+      var avatar = Cookies.get('selectedUserAvatar');
+      console.log('AVATAR: ' + avatar);
+      document.getElementById("status_avatar").src = avatar;
+    </script>
     <!--русскоязычная локализация SDK-->
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
 </body>
