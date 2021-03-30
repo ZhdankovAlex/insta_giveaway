@@ -21,6 +21,8 @@
         {
             console.log('STATUS: connected');
             // Получаем FB имя вошедшего пользователя
+            // Флаг будет означать, что все данные успели прочитаться корректно
+            var goRedirect = false;
             FB.api('/me', function(response)
             {
                 console.log('ENTER: Пользователь зашёл');
@@ -68,22 +70,25 @@
                                 // бросаем в куки
                                 Cookies.set(name_key, current_name, { path: '/', domain: 'zandau.kz', secure: true});
                                 Cookies.set(avatar_key, current_avatar, { path: '/', domain: 'zandau.kz', secure: true});
+                                goRedirect = true;
                               });
                             }
                       });
                     }
                 });
             });
-            // Перенаправляем пользователя на страницу accounts
+            // Перенаправляем пользователя на страницу accounts ЧЕРЕЗ 6 СЕКУНД - ДАЁМ ДАННЫМ ВРЕМЯ РАСПАРСИТЬСЯ
             console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
-            //window.location.href = 'accounts.html';
+            setTimeout(function()
+            {
+              window.location.href = 'accounts.html';
+            }, 6000);
         }
         else
         {
             console.log('WARNING: Пользователь не прошёл авторизацию или она была отменена');
         }
       }
-
       // обрабатываем нажатие кнопки логин
       function checkLoginState()
       {
@@ -92,8 +97,7 @@
             statusChangeCallback(response);
         });
       }
-
-      // подгужаем SDK
+      // подгужаем SDK - для Login
       window.fbAsyncInit = function()
       {
         FB.init({
