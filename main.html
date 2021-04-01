@@ -77,12 +77,15 @@
                     }
                 });
             });
-            // Перенаправляем пользователя на страницу accounts ЧЕРЕЗ 8 СЕКУНД - ДАЁМ ДАННЫМ ВРЕМЯ РАСПАРСИТЬСЯ
-            console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
-            setTimeout(function()
+            var name_key = 'userName0';
+            var existing_name = Cookies.get(name_key);
+            // если в куках есть данные об аккаунте insta (аву не проверяем - считаем, что она есть по умолчанию, если есть имя)
+            if (existing_name != 'undefined')
             {
-              window.location.href = 'accounts.html';
-            }, 8000);
+                // Перенаправляем пользователя на страницу accounts
+                console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
+                window.location.href = 'accounts.html';
+            }
         }
         else
         {
