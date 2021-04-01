@@ -410,6 +410,11 @@ progress::-moz-progress-bar {
     top: 108px;
     right: 19px;
 }
+#status_avatar{
+width:4vw;
+height:4vw;
+margin-right:1vw;
+border-radius:100%}
 @media screen and (max-width: 800px){
     main{
         width: 100%;
