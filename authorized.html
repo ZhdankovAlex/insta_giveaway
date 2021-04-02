@@ -25,6 +25,7 @@
                 {
                     console.log('EXIT: Пользователь вышел');
                     // сносим куки активного аккаунта
+                    Cookies.remove('selectedUserId', { path: '/', domain: 'zandau.kz', secure: true});
                     Cookies.remove('selectedUserName', { path: '/', domain: 'zandau.kz', secure: true});
                     Cookies.remove('selectedUserAvatar', { path: '/', domain: 'zandau.kz', secure: true});
                     // перенаправляем юзера на главную
@@ -34,10 +35,23 @@
               else
               {
                 console.log('ERROR: Пользователь уже вышел');
+                document.getElementById("status_id").innerHTML = '-1';
                 document.getElementById("status_name").innerHTML = 'Чтобы начать, авторизируйтесь через Instagram';
                 document.getElementById("status_avatar").src = '';
               }
           });
+      }
+      // Вытащим id всех постов в аккаунте
+      function GetPosts()
+      {
+        // Формируем строку запроса
+        stringGetResonse = '/' + id + '/media';
+        FB.api(stringGetResonse, function(response)
+        {
+          console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
+          console.log(response);
+          // TODO: Обработаем полученую инфу
+        });
       }
       // подгужаем SDK - для Logout
       window.fbAsyncInit = function()
@@ -58,6 +72,7 @@
             <img id="status_avatar" src="img/avatar.png" alt="avatar" style="width:4vw; height:4vw; margin-right:1vw; border-radius:100%">
             <div class="name_and_exit">
                 <h4 id="status_name"></h4>
+                <p id="status_id" style="display:none"></p>
                 <div class="exit" onclick="Logout()">Выйти</div>
             </div>
         </div>
@@ -101,16 +116,23 @@
         </div>
     </main>
     <script>
-      // подставляем имя вошедшего юзера
-      // достаём из куки
+      // достаём из куки данные вошедшего юзера
+      console.log('COOKIE: Поиск id пользователя');
+      var id = Cookies.get('selectedUserId');
+      console.log('ID: ' + id);
+      document.getElementById("status_id").innerHTML = id;
+
       console.log('COOKIE: Поиск имени пользователя');
       var name = Cookies.get('selectedUserName');
       console.log('NAME: ' + name);
       document.getElementById("status_name").innerHTML = name;
+
       console.log('COOKIE: Поиск аватара пользователя');
       var avatar = Cookies.get('selectedUserAvatar');
       console.log('AVATAR: ' + avatar);
       document.getElementById("status_avatar").src = avatar;
+
+      //GetPosts();      
     </script>
     <!--русскоязычная локализация SDK-->
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
