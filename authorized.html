@@ -42,8 +42,25 @@
         });
     }
     // Вытащим из сookie id юзера
-
-
+    function GetId()
+    {
+        var id = Cookies.get('selectedUserId');
+        if (existing_name != undefined)
+        {
+            console.log('COOKIE: Поиск id пользователя');
+            console.log('ID: ' + id);
+            GetPosts(id);
+        }
+        else // вызовем этот метод ещё раз через 8 секунд
+        {
+            setTimeout(function()
+            {
+                // обновим страничку, чтобы подтянулись куки
+                window.location.reload();
+                GetId();
+            }, 8000);
+        }
+    }
     // Вытащим id всех постов в аккаунте
     function GetPosts(id)
     {
@@ -66,7 +83,7 @@
             version: 'v10.0'
         });
         console.log('SDK ready');
-
+        GetId();
     };
 
     </script>
