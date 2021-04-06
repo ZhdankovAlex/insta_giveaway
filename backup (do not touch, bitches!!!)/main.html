@@ -52,11 +52,13 @@
                               {
                                 console.log('INSTA ACCOUNT: Получены имя и аватар');
                                 console.log(response);
-                                // Получим profile_picture_url (аватарки) и name (имена) страничек Insta
+                                // Получим profile_picture_url (аватарки), name (имена), id страничек Insta
+                                var current_id = response.id;
+                                console.log('ID: ' + current_id);
                                 var current_name = response.name;
                                 console.log('NAME: ' + current_name);
                                 var current_avatar = response.profile_picture_url;
-                                console.log('AVATAR: ' + current_avatar);                                       // TODO: здесь стащим потом всю инфу о подписках-хуисках и прочей хуйне
+                                console.log('AVATAR: ' + current_avatar);
                                 // Закидываем всю найденную инфу в куки, чтобы потом достать её на authorized
                                 if (navigator.cookieEnabled === false)
                                 {
@@ -65,22 +67,50 @@
                                 // запишем ключи куки с именем и авой
                                 var name_key = 'userName' + i.toString();
                                 var avatar_key = 'userAvatar' + i.toString();
+                                var id_key = 'userId' + i.toString();
                                 // бросаем в куки
                                 Cookies.set(name_key, current_name, { path: '/', domain: 'zandau.kz', secure: true});
                                 Cookies.set(avatar_key, current_avatar, { path: '/', domain: 'zandau.kz', secure: true});
+                                Cookies.set(id_key, current_id, { path: '/', domain: 'zandau.kz', secure: true});                              
                               });
                             }
                       });
                     }
                 });
             });
-            // Перенаправляем пользователя на страницу accounts
-            console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
-            //window.location.href = 'accounts.html';
+            if (Callback())
+            {
+                // Перенаправляем пользователя на страницу accounts
+                console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
+                window.location.href = 'accounts.html';
+            }
         }
         else
         {
             console.log('WARNING: Пользователь не прошёл авторизацию или она была отменена');
+        }
+      }
+
+      // проверям статус get запроса
+      function Callback()
+      {
+        var existing_name = Cookies.get('userName0');
+        // если в куках есть данные об аккаунте insta
+        // (аву не проверяем - считаем, что она есть по умолчанию, если есть имя)
+        if (existing_name != undefined)
+        {
+            console.log('FIND NAME: ' + existing_name);
+            return true;
+        }
+        else // вызовем этот метод ещё раз через 5 секунд
+        {
+            alert('Данные загружаются, подождите, пожалуйста.');
+            setTimeout(function()
+            {
+                // обновим страничку, чтобы подтянулись куки
+                window.location.reload();
+                Callback();
+            }, 10000);
         }
       }
 
@@ -92,8 +122,7 @@
             statusChangeCallback(response);
         });
       }
-
-      // подгужаем SDK
+      // подгужаем SDK - для Login
       window.fbAsyncInit = function()
       {
         FB.init({
