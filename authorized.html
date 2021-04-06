@@ -13,14 +13,14 @@
     <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
     <title>authorized</title>
     <script>
-      // обрабатываем кнопку выхода
-      function Logout()
-      {
-          // проверим, залогинен ли вообще ещё пользователь
-          FB.getLoginStatus(function(response)
-          {
-              if (response.status === 'connected')
-              {
+    // обрабатываем кнопку выхода
+    function Logout()
+    {
+        // проверим, залогинен ли вообще ещё пользователь
+        FB.getLoginStatus(function(response)
+        {
+            if (response.status === 'connected')
+            {
                 FB.logout(function(response)
                 {
                     console.log('EXIT: Пользователь вышел');
@@ -31,31 +31,34 @@
                     // перенаправляем юзера на главную
                     window.location.href = 'main.html';
                 });
-              }
-              else
-              {
+            }
+            else
+            {
                 console.log('ERROR: Пользователь уже вышел');
                 document.getElementById("status_id").innerHTML = '-1';
                 document.getElementById("status_name").innerHTML = 'Чтобы начать, авторизируйтесь через Instagram';
                 document.getElementById("status_avatar").src = '';
-              }
-          });
-      }
-      // Вытащим id всех постов в аккаунте
-      function GetPosts()
-      {
+            }
+        });
+    }
+    // Вытащим из сookie id юзера
+
+
+    // Вытащим id всех постов в аккаунте
+    function GetPosts(id)
+    {
         // Формируем строку запроса
         stringGetResonse = '/' + id + '/media';
         FB.api(stringGetResonse, function(response)
         {
-          console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
-          console.log(response);
-          // TODO: Обработаем полученую инфу
+            console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
+            console.log(response);
+            // TODO: Обработаем полученую инфу
         });
-      }
-      // подгужаем SDK - для Logout
-      window.fbAsyncInit = function()
-      {
+    }
+    // подгужаем SDK - для Logout
+    window.fbAsyncInit = function()
+    {
         FB.init({
             appId: '1103215670180535',
             cookie: true,
@@ -63,7 +66,9 @@
             version: 'v10.0'
         });
         console.log('SDK ready');
-      };
+
+    };
+
     </script>
 </head>
 <body>
@@ -79,62 +84,62 @@
         <div class="wrapper">
             <h1>Выбор победителей в Instagram</h1>
             <h2>Проводим розыгрыш быстро и эффективно</h2>
-                <form action="" class="adressform">
-                    <div class="adress_input">
-                        <!-- Для ссылки -->
-                        <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="">
-                        <input type="submit" value="Начать">
+            <form action="" class="adressform">
+                <div class="adress_input">
+                    <!-- Для ссылки -->
+                    <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="">
+                    <input type="submit" value="Начать">
+                </div>
+                <!-- Переключатели -->
+                <div class="radio_checkbox_items">
+                    <!-- radio -->
+                    <div class="radio_em">
+                        <h3>Выбрать победителя из:</h3>
+
+                        <input type="radio" name="victory" id="author" checked><label for="author">Авторов</label>
+
+                        <input type="radio" name="victory" id="comment"><label for="comment">Комментариев</label>
+
+                        <input type="radio" name="victory" id="hashteg"><label for="hashteg">Хештегов</label>
+
+                        <input type="radio" name="victory" id="like"><label for="like">Лайков</label>
                     </div>
-                    <!-- Переключатели -->
-                    <div class="radio_checkbox_items">
-                        <!-- radio -->
-                        <div class="radio_em">
-                            <h3>Выбрать победителя из:</h3>
+                    <!-- checkbox -->
+                    <div class="checbox_em">
+                        <h3>Дополнительные функции:</h3>
+                        <input type="checkbox" name="subscribe" id="subscribe" checked><label for="subscribe">Проверка подписки</label>
 
-                                <input type="radio" name="victory" id="author" checked><label for="author">Авторов</label>
+                        <input type="checkbox" name="repost" id="repost"><label for="repost">Проверка репоста</label>
 
-                                <input type="radio" name="victory" id="comment"><label for="comment">Комментариев</label>
+                        <input type="checkbox" name="sponsors" id="sponsors"><label for="sponsors">Проверка спонсоров</label>
 
-                                <input type="radio" name="victory" id="hashteg"><label for="hashteg">Хештегов</label>
-
-                                <input type="radio" name="victory" id="like"><label for="like">Лайков</label>
-                        </div>
-                        <!-- checkbox -->
-                        <div class="checbox_em">
-                            <h3>Дополнительные функции:</h3>
-                            <input type="checkbox" name="subscribe" id="subscribe" checked><label for="subscribe">Проверка подписки</label>
-
-                            <input type="checkbox" name="repost" id="repost"><label for="repost">Проверка репоста</label>
-
-                            <input type="checkbox" name="sponsors" id="sponsors"><label for="sponsors">Проверка спонсоров</label>
-
-                            <input type="checkbox" name="check_like" id="check_like"><label for="check_like">Проверка лайков</label>
-                        </div>
+                        <input type="checkbox" name="check_like" id="check_like"><label for="check_like">Проверка лайков</label>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-    </main>
-    <script>
-      // достаём из куки данные вошедшего юзера
-      console.log('COOKIE: Поиск id пользователя');
-      var id = Cookies.get('selectedUserId');
-      console.log('ID: ' + id);
-      document.getElementById("status_id").innerHTML = id;
+    </div>
+</main>
+<script>
+// достаём из куки данные вошедшего юзера
+console.log('COOKIE: Поиск id пользователя');
+var id = Cookies.get('selectedUserId');
+console.log('ID: ' + id);
+document.getElementById("status_id").innerHTML = id;
 
-      console.log('COOKIE: Поиск имени пользователя');
-      var name = Cookies.get('selectedUserName');
-      console.log('NAME: ' + name);
-      document.getElementById("status_name").innerHTML = name;
+console.log('COOKIE: Поиск имени пользователя');
+var name = Cookies.get('selectedUserName');
+console.log('NAME: ' + name);
+document.getElementById("status_name").innerHTML = name;
 
-      console.log('COOKIE: Поиск аватара пользователя');
-      var avatar = Cookies.get('selectedUserAvatar');
-      console.log('AVATAR: ' + avatar);
-      document.getElementById("status_avatar").src = avatar;
+console.log('COOKIE: Поиск аватара пользователя');
+var avatar = Cookies.get('selectedUserAvatar');
+console.log('AVATAR: ' + avatar);
+document.getElementById("status_avatar").src = avatar;
 
-      //GetPosts();      
-    </script>
-    <!--русскоязычная локализация SDK-->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
+//GetPosts(id);
+</script>
+<!--русскоязычная локализация SDK-->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
 </body>
 </html>
