@@ -41,29 +41,10 @@
             }
         });
     }
-    // Вытащим из сookie id юзера
-    function GetId()
-    {
-        var id = Cookies.get('selectedUserId');
-        if (existing_name != undefined)
-        {
-            console.log('COOKIE: Поиск id пользователя');
-            console.log('ID: ' + id);
-            GetPosts(id);
-        }
-        else // вызовем этот метод ещё раз через 8 секунд
-        {
-            setTimeout(function()
-            {
-                // обновим страничку, чтобы подтянулись куки
-                window.location.reload();
-                GetId();
-            }, 8000);
-        }
-    }
     // Вытащим id всех постов в аккаунте
     function GetPosts(id)
     {
+        console.log('Составляем строку запроса...');
         // Формируем строку запроса
         stringGetResonse = '/' + id + '/media';
         FB.api(stringGetResonse, function(response)
@@ -73,7 +54,7 @@
             // TODO: Обработаем полученую инфу
         });
     }
-    // подгужаем SDK - для Logout
+    // подгужаем SDK
     window.fbAsyncInit = function()
     {
         FB.init({
@@ -82,10 +63,28 @@
             xfbml: true,
             version: 'v10.0'
         });
-        console.log('SDK ready');
-        GetId();
+        var SDKready = true;
+        Cookies.set('isSDKready', SDKready, { path: '/', domain: 'zandau.kz', secure: true});
     };
-
+    // проверяем загрузилась ли SDK
+    function IsReadySDK()
+    {
+        console.log('Проверяем, загрузилась ли SDK');
+        var ready = Cookies.get('isSDKready');
+        if (ready != undefined)
+        {
+            console.log('SDK ready');
+            return ready;
+        }
+        else
+        {
+            setTimeout(function()
+            {
+                window.location.reload();
+                IsReadySDK();
+            }, 3000);
+        }
+    }
     </script>
 </head>
 <body>
@@ -154,7 +153,10 @@ var avatar = Cookies.get('selectedUserAvatar');
 console.log('AVATAR: ' + avatar);
 document.getElementById("status_avatar").src = avatar;
 
-//GetPosts(id);
+if (IsReadySDK())
+{
+    GetPosts(id);
+}
 </script>
 <!--русскоязычная локализация SDK-->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
