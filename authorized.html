@@ -41,13 +41,29 @@
             }
         });
     }
-    // Вытащим id всех постов в аккаунте
-    function GetPosts(id)
+    // Проверим, есть ли в куках id аккаунта
+    function CheckID()
     {
-        console.log('Составляем строку запроса...');
+        var existing_id = Cookies.get('selectedUserId');
+        if (existing_id != undefined)
+        {
+            return existing_id;
+        }
+        else
+        {
+            setTimeout(function()
+            {
+                CheckID();
+            }, 1000);
+        }
+    }
+    // Вытащим id всех постов по id аккаунта
+    function GetMedia()
+    {
+        var id = CheckID();
         // Формируем строку запроса
-        stringGetResonse = '/' + id + '/media';
-        FB.api(stringGetResonse, function(response)
+        stringGetResponse = '/' + id.toString() +'/media';
+        FB.api(stringGetResponse, function(response)
         {
             console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
             console.log(response);
@@ -63,28 +79,8 @@
             xfbml: true,
             version: 'v10.0'
         });
-        var SDKready = true;
-        Cookies.set('isSDKready', SDKready, { path: '/', domain: 'zandau.kz', secure: true});
+        GetMedia();
     };
-    // проверяем загрузилась ли SDK
-    function IsReadySDK()
-    {
-        console.log('Проверяем, загрузилась ли SDK');
-        var ready = Cookies.get('isSDKready');
-        if (ready != undefined)
-        {
-            console.log('SDK ready');
-            return ready;
-        }
-        else
-        {
-            setTimeout(function()
-            {
-                window.location.reload();
-                IsReadySDK();
-            }, 3000);
-        }
-    }
     </script>
 </head>
 <body>
@@ -152,11 +148,6 @@ console.log('COOKIE: Поиск аватара пользователя');
 var avatar = Cookies.get('selectedUserAvatar');
 console.log('AVATAR: ' + avatar);
 document.getElementById("status_avatar").src = avatar;
-
-if (IsReadySDK())
-{
-    GetPosts(id);
-}
 </script>
 <!--русскоязычная локализация SDK-->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
