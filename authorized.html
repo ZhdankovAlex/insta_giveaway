@@ -57,27 +57,6 @@
       }, 1000);
     }
   }
-  // Вытащим id всех постов по id аккаунта
-  function GetMedia(response)
-  {
-    if (response.status === 'connected')
-    {
-      console.log(response);
-      var id = CheckID();
-      // Формируем строку запроса
-      stringGetResponse = '/' + id.toString() +'/media';
-      FB.api(stringGetResponse, function(response)
-      {
-        console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
-        console.log(response);
-        // TODO: Обработаем полученую инфу
-      });
-    }
-    else
-    {
-      console.log('WARNING: Пользователь не прошёл авторизацию или она была отменена');
-    }
-  }
   // подгужаем SDK
   window.fbAsyncInit = function()
   {
@@ -89,7 +68,7 @@
     });
     FB.getLoginStatus(function(response)
     {
-      GetMedia(response);
+      console.log(response);
     });
   };
   </script>
