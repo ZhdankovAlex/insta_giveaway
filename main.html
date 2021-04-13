@@ -46,15 +46,17 @@
                 // Получим id бизнес-страницы Insta
                 console.log('INSTA BUSINESS ACCOUNT: ' + response.instagram_business_account.id);
                 var currentID_Inst = response.instagram_business_account.id;
-                // Формируем строку запроса
-                stringGet = '/' + currentID_Inst + '?fields=name,profile_picture_url';
+                // Формируем строку запроса TODO: тут тупо ВСЕ возможные поля вытащим (пока)!
+                stringGet = '/' + currentID_Inst + '?fields=biography,id,ig_id,followers_count,follows_count,media_count,name,profile_picture_url,username,website';
                 FB.api(stringGet, function(response)
                 {
                   console.log('INSTA ACCOUNT: Получены имя и аватар');
                   console.log(response);
-                  // Получим profile_picture_url (аватарки), name (имена), id страничек Insta
+                  // Получим profile_picture_url (аватарки), name (имена), id страничек Insta, username (login)
                   var current_id = response.id;
                   console.log('ID: ' + current_id);
+                  var current_login = response.username;
+                  console.log('LOGIN: ' + current_login);
                   var current_name = response.name;
                   console.log('NAME: ' + current_name);
                   var current_avatar = response.profile_picture_url;
@@ -65,10 +67,12 @@
                     alert("Cookies должны быть включены!");
                   }
                   // запишем ключи куки с именем и авой
+                  var login_key = 'userLogin' + i.toString();
                   var name_key = 'userName' + i.toString();
                   var avatar_key = 'userAvatar' + i.toString();
                   var id_key = 'userId' + i.toString();
                   // бросаем в куки
+                  Cookies.set(login_key, current_login, { path: '/', domain: 'zandau.kz', secure: true});
                   Cookies.set(name_key, current_name, { path: '/', domain: 'zandau.kz', secure: true});
                   Cookies.set(avatar_key, current_avatar, { path: '/', domain: 'zandau.kz', secure: true});
                   Cookies.set(id_key, current_id, { path: '/', domain: 'zandau.kz', secure: true});
@@ -82,7 +86,7 @@
       {
         // Перенаправляем пользователя на страницу accounts
         console.log('REDIRECT: Пользователь будет перенаправлен на accounts');
-        window.location.href = 'accounts.html';
+        //window.location.href = 'accounts.html';
       }
     }
     else

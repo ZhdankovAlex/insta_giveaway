@@ -14,25 +14,30 @@
   <title>accounts</title>
   <script>
   // перенаправляем юзера на authorized
-  function RedirectAuthorized(user_id, username_id, user_avatar_id)
+  function RedirectAuthorized(user_id, username_id, user_avatar_id, user_login_id)
   {
     // берём имя и аватар из содержания блока
     var id = document.getElementById(user_id).innerHTML;
+    var login = document.getElementById(uwer_login).innerHTML;
     var name = document.getElementById(username_id).innerHTML;
     var avatar = document.getElementById(user_avatar_id).src;
     console.log('SELECTED ID: ' + id);
+    console.log('SELECTED LOGIN: ' + login);
     console.log('SELECTED NAME: ' + name);
     console.log('SELECTED AVATAR: ' + avatar);
     // закидываем в куки, чтобы достать на authorized
+    Cookies.set('selectedUserLogin', login, { path: '/', domain: 'zandau.kz', secure: true});
     Cookies.set('selectedUserId', id, { path: '/', domain: 'zandau.kz', secure: true});
     Cookies.set('selectedUserName', name, { path: '/', domain: 'zandau.kz', secure: true});
     Cookies.set('selectedUserAvatar', avatar, { path: '/', domain: 'zandau.kz', secure: true});
     // почистим старые куки - нам больше они не нужны
     for (let i = 0; i < 5; i++)
     {
+      var login_key = 'userLogin' + i.toString();
       var id_key = 'userId' + i.toString();
       var name_key = 'userName' + i.toString();
       var avatar_key = 'userAvatar' + i.toString();
+      Cookies.remove(login_key, { path: '/', domain: 'zandau.kz', secure: true});
       Cookies.remove(id_key, { path: '/', domain: 'zandau.kz', secure: true});
       Cookies.remove(name_key, { path: '/', domain: 'zandau.kz', secure: true});
       Cookies.remove(avatar_key, { path: '/', domain: 'zandau.kz', secure: true});
@@ -49,43 +54,48 @@
   <ul class="accounts">
     <!--Первый аккаунт-->
     <li class="accounts_items">
-      <p id="user_name_0" onclick="RedirectAuthorized('user_id_0', 'user_name_0', 'user_avatar_0')" style="display:none" >
+      <p id="user_name_0" onclick="RedirectAuthorized('user_id_0', 'user_name_0', 'user_avatar_0', 'user_login_0')" style="display:none" >
         аккаунт не найден
       </p>
       <img id="user_avatar_0" src="img/avatar.png" alt="avatar_0" style="display:none">
       <p id="user_id_0" style="display:none"></p>
+      <p id="user_login_0" style="display:none"></p>
     </li>
     <!--Второй аккаунт-->
     <li class="accounts_items">
-      <p id="user_name_1" onclick="RedirectAuthorized('user_id_1', 'user_name_1', 'user_avatar_1')" style="display:none">
+      <p id="user_name_1" onclick="RedirectAuthorized('user_id_1', 'user_name_1', 'user_avatar_1', 'user_login_1')" style="display:none">
         аккаунт не найден
       </p>
       <img id="user_avatar_1" src="img/avatar.png" alt="avatar_1" style="display:none">
       <p id="user_id_1" style="display:none"></p>
+      <p id="user_login_1" style="display:none"></p>
     </li>
     <!--Третий аккаунт-->
     <li class="accounts_items">
-      <p id="user_name_2" onclick="RedirectAuthorized('user_id_2', 'user_name_2', 'user_avatar_2')" style="display:none">
+      <p id="user_name_2" onclick="RedirectAuthorized('user_id_2', 'user_name_2', 'user_avatar_2', 'user_login_2')" style="display:none">
         аккаунт не найден
       </p>
       <img id="user_avatar_2" src="img/avatar.png" alt="avatar_2" style="display:none">
       <p id="user_id_2" style="display:none"></p>
+      <p id="user_login_2" style="display:none"></p>
     </li>
     <!--Четвёртый аккаунт-->
     <li class="accounts_items">
-      <p id="user_name_3" onclick="RedirectAuthorized('user_id_3', 'user_name_3', 'user_avatar_3')" style="display:none">
+      <p id="user_name_3" onclick="RedirectAuthorized('user_id_3', 'user_name_3', 'user_avatar_3', 'user_login_3')" style="display:none">
         аккаунт не найден
       </p>
       <img id="user_avatar_3" src="img/avatar.png" alt="avatar_3" style="display:none">
       <p id="user_id_3" style="display:none"></p>
+      <p id="user_login_3" style="display:none"></p>
     </li>
     <!--Пятый аккаунт-->
     <li class="accounts_items">
-      <p id="user_name_4" onclick="RedirectAuthorized('user_id_4', 'user_name_4', 'user_avatar_4')" style="display:none">
+      <p id="user_name_4" onclick="RedirectAuthorized('user_id_4', 'user_name_4', 'user_avatar_4', 'user_login_4')" style="display:none">
         аккаунт не найден
       </p>
       <img id="user_avatar_4" src="img/avatar.png" alt="avatar_4" style="display:none">
       <p id="user_id_4" style="display:none"></p>
+      <p id="user_login_4" style="display:none"></p>
     </li>
   </ul>
   <script>
@@ -97,16 +107,22 @@
   for (let i = 0; i < 5; i++)
   {
     // ключи, по которым будем вытягивать нужную куку
+    var login_key = 'userLogin' + i.toString();
     var id_key = 'userId' + i.toString();
     var name_key = 'userName' + i.toString();
     var avatar_key = 'userAvatar' + i.toString();
     // сохраним полученные элементы
+    var login = Cookies.get(login_key);
     var id = Cookies.get(id_key);
     var name = Cookies.get(name_key);
     var avatar = Cookies.get(avatar_key);
     // если они не пустые (мб там меньше 5 аккаунтов, тогда тут будет пусто)
     if (name != 'undefined')
     {
+      var login_id = "user_login_" + i.toString();
+      console.log('LOGIN: ' + login);
+      document.getElementById(login_id).innerHTML = login;
+
       var id_id = "user_id_" + i.toString();
       console.log('ID: ' + id);
       document.getElementById(id_id).innerHTML = id;
