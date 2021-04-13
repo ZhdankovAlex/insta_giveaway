@@ -25,6 +25,7 @@
         {
           console.log('EXIT: Пользователь вышел');
           // сносим куки активного аккаунта
+          Cookies.remove('selectedUserLogi', { path: '/', domain: 'zandau.kz', secure: true});
           Cookies.remove('selectedUserId', { path: '/', domain: 'zandau.kz', secure: true});
           Cookies.remove('selectedUserName', { path: '/', domain: 'zandau.kz', secure: true});
           Cookies.remove('selectedUserAvatar', { path: '/', domain: 'zandau.kz', secure: true});
@@ -36,6 +37,7 @@
       {
         console.log('ERROR: Пользователь уже вышел');
         document.getElementById("status_id").innerHTML = '-1';
+        document.getElementById("status_login").innerHTML = '';
         document.getElementById("status_name").innerHTML = 'Чтобы начать, авторизируйтесь через Instagram';
         document.getElementById("status_avatar").src = '';
       }
@@ -84,6 +86,7 @@
       <div class="name_and_exit">
         <h4 id="status_name"></h4>
         <p id="status_id" style="display:none"></p>
+        <p id="status_login" style="display:none"></p>
         <div class="exit" onclick="Logout()">Выйти</div>
       </div>
     </div>
@@ -132,6 +135,11 @@ console.log('COOKIE: Поиск id пользователя');
 var id = Cookies.get('selectedUserId');
 console.log('ID: ' + id);
 document.getElementById("status_id").innerHTML = id;
+
+console.log('COOKIE: Поиск login пользователя');
+var login = Cookies.get('selectedUserLogin');
+console.log('LOGIN: ' + login);
+document.getElementById("status_login").innerHTML = login;
 
 console.log('COOKIE: Поиск имени пользователя');
 var name = Cookies.get('selectedUserName');
