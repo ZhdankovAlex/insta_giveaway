@@ -72,7 +72,6 @@
     {
       if (response.status === 'connected')
       {
-        // парсим данные https://www.instagram.com/<username>/?__a=1
         console.log(response);
       }
     });
@@ -96,32 +95,25 @@
       <form action="" class="adressform">
         <div class="adress_input">
           <!-- Для ссылки -->
-          <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="">
-          <input type="submit" value="Начать">
+          <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="instagram_link">
+          <input type="submit" value="Начать" onclick="Parse()">
         </div>
         <!-- Переключатели -->
         <div class="radio_checkbox_items">
           <!-- radio -->
           <div class="radio_em">
             <h3>Выбрать победителя из:</h3>
-
             <input type="radio" name="victory" id="author" checked><label for="author">Авторов</label>
-
             <input type="radio" name="victory" id="comment"><label for="comment">Комментариев</label>
-
             <input type="radio" name="victory" id="hashteg"><label for="hashteg">Хештегов</label>
-
             <input type="radio" name="victory" id="like"><label for="like">Лайков</label>
           </div>
           <!-- checkbox -->
           <div class="checbox_em">
             <h3>Дополнительные функции:</h3>
             <input type="checkbox" name="subscribe" id="subscribe" checked><label for="subscribe">Проверка подписки</label>
-
             <input type="checkbox" name="repost" id="repost"><label for="repost">Проверка репоста</label>
-
             <input type="checkbox" name="sponsors" id="sponsors"><label for="sponsors">Проверка спонсоров</label>
-
             <input type="checkbox" name="check_like" id="check_like"><label for="check_like">Проверка лайков</label>
           </div>
         </div>
@@ -150,6 +142,38 @@ console.log('COOKIE: Поиск аватара пользователя');
 var avatar = Cookies.get('selectedUserAvatar');
 console.log('AVATAR: ' + avatar);
 document.getElementById("status_avatar").src = avatar;
+
+function Parse()
+{
+  // парсим данные из json
+  var linkJSON = "https://www.instagram.com/" + login + "/?__a=1";
+  // парсим данные по подписчикам (юзаем готовую либу)
+  var linkFollowers = "https://www.instagram.com/" + login + "/followers/";
+  // запишем ссылочку на пост от пользователя
+  var link = document.getElementById("instagram_link").innerHTML;
+  // парсим данные по лайкам (юзаем готовую либу)
+  var linkLikes = link;  // TODO: должны передать ссылку на поп-ап с лайками! не на сам пост, а на список лайкнувших!
+  
+  if (link = "")
+  {
+    alert('Укажите ссылку на пост!');
+  }
+  else
+  {
+    var response = await fetch(link); // await ждёт выполнения fetch
+    if (responce.ok)
+    {
+      console.log("SUCCESS of JSON");
+      console.log(responce);
+      var json = await responce.json();
+
+    }
+    else
+    {
+      alert("ERROR of FETCH: " + responce);
+    }
+  }
+}
 </script>
 <!--русскоязычная локализация SDK-->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
