@@ -43,6 +43,22 @@
       }
     });
   }
+  // Парсим лайки
+  function Parse()
+  {
+    // запишем ссылочку на пост от пользователя
+    var link = document.getElementById("instagram_link").placeholder;
+    if (link == "undefined")
+    {
+      alert('Укажите ссылку на пост!');
+    }
+    else
+    {
+      // переходим на страницу поста
+      window.location.href = link;
+      //document.getElementsByClassName('zV_Nj')[0].click();
+    }
+  }
   // Проверим, есть ли в куках id аккаунта
   function CheckID()
   {
@@ -142,38 +158,6 @@ console.log('COOKIE: Поиск аватара пользователя');
 var avatar = Cookies.get('selectedUserAvatar');
 console.log('AVATAR: ' + avatar);
 document.getElementById("status_avatar").src = avatar;
-
-function Parse()
-{
-  // парсим данные из json
-  var linkJSON = "https://www.instagram.com/" + login + "/?__a=1";
-  // парсим данные по подписчикам (юзаем готовую либу)
-  var linkFollowers = "https://www.instagram.com/" + login + "/followers/";
-  // запишем ссылочку на пост от пользователя
-  var link = document.getElementById("instagram_link").innerHTML;
-  // парсим данные по лайкам (юзаем готовую либу)
-  var linkLikes = link;  // TODO: должны передать ссылку на поп-ап с лайками! не на сам пост, а на список лайкнувших!
-  
-  if (link = "")
-  {
-    alert('Укажите ссылку на пост!');
-  }
-  else
-  {
-    var response = await fetch(link); // await ждёт выполнения fetch
-    if (responce.ok)
-    {
-      console.log("SUCCESS of JSON");
-      console.log(responce);
-      var json = await responce.json();
-
-    }
-    else
-    {
-      alert("ERROR of FETCH: " + responce);
-    }
-  }
-}
 </script>
 <!--русскоязычная локализация SDK-->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>

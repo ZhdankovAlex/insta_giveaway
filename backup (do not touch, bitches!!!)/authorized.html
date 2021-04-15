@@ -1,140 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
-    <title>authorized</title>
-    <script>
-      // обрабатываем кнопку выхода
-      function Logout()
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="/node_modules/js-cookie/src/js.cookie.js"></script>
+  <title>authorized</title>
+  <script>
+  // обрабатываем кнопку выхода
+  function Logout()
+  {
+    // проверим, залогинен ли вообще ещё пользователь
+    FB.getLoginStatus(function(response)
+    {
+      if (response.status === 'connected')
       {
-          // проверим, залогинен ли вообще ещё пользователь
-          FB.getLoginStatus(function(response)
-          {
-              if (response.status === 'connected')
-              {
-                FB.logout(function(response)
-                {
-                    console.log('EXIT: Пользователь вышел');
-                    // сносим куки активного аккаунта
-                    Cookies.remove('selectedUserId', { path: '/', domain: 'zandau.kz', secure: true});
-                    Cookies.remove('selectedUserName', { path: '/', domain: 'zandau.kz', secure: true});
-                    Cookies.remove('selectedUserAvatar', { path: '/', domain: 'zandau.kz', secure: true});
-                    // перенаправляем юзера на главную
-                    window.location.href = 'main.html';
-                });
-              }
-              else
-              {
-                console.log('ERROR: Пользователь уже вышел');
-                document.getElementById("status_id").innerHTML = '-1';
-                document.getElementById("status_name").innerHTML = 'Чтобы начать, авторизируйтесь через Instagram';
-                document.getElementById("status_avatar").src = '';
-              }
-          });
-      }
-      // Вытащим id всех постов в аккаунте
-      function GetPosts()
-      {
-        // Формируем строку запроса
-        stringGetResonse = '/' + id + '/media';
-        FB.api(stringGetResonse, function(response)
+        FB.logout(function(response)
         {
-          console.log('INSTA ACCOUNT: Получаем id всех постов на странице');
-          console.log(response);
-          // TODO: Обработаем полученую инфу
+          console.log('EXIT: Пользователь вышел');
+          // сносим куки активного аккаунта
+          Cookies.remove('selectedUserLogin', { path: '/', domain: 'zandau.kz', secure: true});
+          Cookies.remove('selectedUserId', { path: '/', domain: 'zandau.kz', secure: true});
+          Cookies.remove('selectedUserName', { path: '/', domain: 'zandau.kz', secure: true});
+          Cookies.remove('selectedUserAvatar', { path: '/', domain: 'zandau.kz', secure: true});
+          // перенаправляем юзера на главную
+          window.location.href = 'main.html';
         });
       }
-      // подгужаем SDK - для Logout
-      window.fbAsyncInit = function()
+      else
       {
-        FB.init({
-            appId: '1103215670180535',
-            cookie: true,
-            xfbml: true,
-            version: 'v10.0'
-        });
-        console.log('SDK ready');
-      };
-    </script>
+        console.log('ERROR: Пользователь уже вышел');
+        document.getElementById("status_id").innerHTML = '-1';
+        document.getElementById("status_login").innerHTML = '';
+        document.getElementById("status_name").innerHTML = 'Чтобы начать, авторизируйтесь через Instagram';
+        document.getElementById("status_avatar").src = '';
+      }
+    });
+  }
+  // Парсим лайки
+  function Parse()
+  {
+    // запишем ссылочку на пост от пользователя
+    var link = document.getElementById("instagram_link").placeholder;
+    // парсим данные по лайкам (юзаем готовую либу)
+    if (link == "undefined")
+    {
+      alert('Укажите ссылку на пост!');
+    }
+    else
+    {
+      var response = fetch(link);
+      console.log(responce);
+      if (responce.ok)
+      {
+        console.log("SUCCESS of JSON");
+        var json = responce.json();
+      }
+      else
+      {
+        alert("ERROR of FETCH");
+      }
+    }
+  }
+  // Проверим, есть ли в куках id аккаунта
+  function CheckID()
+  {
+    var existing_id = Cookies.get('selectedUserId');
+    if (existing_id != undefined)
+    {
+      return existing_id;
+    }
+    else
+    {
+      setTimeout(function()
+      {
+        CheckID();
+      }, 1000);
+    }
+  }
+  // подгужаем SDK
+  window.fbAsyncInit = function()
+  {
+    FB.init({
+      appId: '1103215670180535',
+      cookie: true,
+      xfbml: true,
+      version: 'v10.0'
+    });
+    FB.getLoginStatus(function(response)
+    {
+      if (response.status === 'connected')
+      {
+        console.log(response);
+      }
+    });
+  };
+  </script>
 </head>
 <body>
-    <main>
-        <div class="user">
-            <img id="status_avatar" src="img/avatar.png" alt="avatar" style="width:4vw; height:4vw; margin-right:1vw; border-radius:100%">
-            <div class="name_and_exit">
-                <h4 id="status_name"></h4>
-                <p id="status_id" style="display:none"></p>
-                <div class="exit" onclick="Logout()">Выйти</div>
-            </div>
+  <main>
+    <div class="user">
+      <img id="status_avatar" src="img/avatar.png" alt="avatar" style="width:4vw; height:4vw; margin-right:1vw; border-radius:100%">
+      <div class="name_and_exit">
+        <h4 id="status_name"></h4>
+        <p id="status_id" style="display:none"></p>
+        <p id="status_login" style="display:none"></p>
+        <div class="exit" onclick="Logout()">Выйти</div>
+      </div>
+    </div>
+    <div class="wrapper">
+      <h1>Выбор победителей в Instagram</h1>
+      <h2>Проводим розыгрыш быстро и эффективно</h2>
+      <form action="" class="adressform">
+        <div class="adress_input">
+          <!-- Для ссылки -->
+          <input type="text" placeholder="https://www.instagram.com/p/CNoya4Vgzs9/?igshid=1bl0wh7n5mc9l" name="adress" id="instagram_link">
+          <input type="submit" value="Начать" onclick="Parse()">
         </div>
-        <div class="wrapper">
-            <h1>Выбор победителей в Instagram</h1>
-            <h2>Проводим розыгрыш быстро и эффективно</h2>
-                <form action="" class="adressform">
-                    <div class="adress_input">
-                        <!-- Для ссылки -->
-                        <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="">
-                        <input type="submit" value="Начать">
-                    </div>
-                    <!-- Переключатели -->
-                    <div class="radio_checkbox_items">
-                        <!-- radio -->
-                        <div class="radio_em">
-                            <h3>Выбрать победителя из:</h3>
-
-                                <input type="radio" name="victory" id="author" checked><label for="author">Авторов</label>
-
-                                <input type="radio" name="victory" id="comment"><label for="comment">Комментариев</label>
-
-                                <input type="radio" name="victory" id="hashteg"><label for="hashteg">Хештегов</label>
-
-                                <input type="radio" name="victory" id="like"><label for="like">Лайков</label>
-                        </div>
-                        <!-- checkbox -->
-                        <div class="checbox_em">
-                            <h3>Дополнительные функции:</h3>
-                            <input type="checkbox" name="subscribe" id="subscribe" checked><label for="subscribe">Проверка подписки</label>
-
-                            <input type="checkbox" name="repost" id="repost"><label for="repost">Проверка репоста</label>
-
-                            <input type="checkbox" name="sponsors" id="sponsors"><label for="sponsors">Проверка спонсоров</label>
-
-                            <input type="checkbox" name="check_like" id="check_like"><label for="check_like">Проверка лайков</label>
-                        </div>
-                    </div>
-                </form>
-            </div>
+        <!-- Переключатели -->
+        <div class="radio_checkbox_items">
+          <!-- radio -->
+          <div class="radio_em">
+            <h3>Выбрать победителя из:</h3>
+            <input type="radio" name="victory" id="author" checked><label for="author">Авторов</label>
+            <input type="radio" name="victory" id="comment"><label for="comment">Комментариев</label>
+            <input type="radio" name="victory" id="hashteg"><label for="hashteg">Хештегов</label>
+            <input type="radio" name="victory" id="like"><label for="like">Лайков</label>
+          </div>
+          <!-- checkbox -->
+          <div class="checbox_em">
+            <h3>Дополнительные функции:</h3>
+            <input type="checkbox" name="subscribe" id="subscribe" checked><label for="subscribe">Проверка подписки</label>
+            <input type="checkbox" name="repost" id="repost"><label for="repost">Проверка репоста</label>
+            <input type="checkbox" name="sponsors" id="sponsors"><label for="sponsors">Проверка спонсоров</label>
+            <input type="checkbox" name="check_like" id="check_like"><label for="check_like">Проверка лайков</label>
+          </div>
         </div>
-    </main>
-    <script>
-      // достаём из куки данные вошедшего юзера
-      console.log('COOKIE: Поиск id пользователя');
-      var id = Cookies.get('selectedUserId');
-      console.log('ID: ' + id);
-      document.getElementById("status_id").innerHTML = id;
+      </form>
+    </div>
+  </div>
+</main>
+<script>
+// достаём из куки данные вошедшего юзера
+console.log('COOKIE: Поиск id пользователя');
+var id = Cookies.get('selectedUserId');
+console.log('ID: ' + id);
+document.getElementById("status_id").innerHTML = id;
 
-      console.log('COOKIE: Поиск имени пользователя');
-      var name = Cookies.get('selectedUserName');
-      console.log('NAME: ' + name);
-      document.getElementById("status_name").innerHTML = name;
+console.log('COOKIE: Поиск login пользователя');
+var login = Cookies.get('selectedUserLogin');
+console.log('LOGIN: ' + login);
+document.getElementById("status_login").innerHTML = login;
 
-      console.log('COOKIE: Поиск аватара пользователя');
-      var avatar = Cookies.get('selectedUserAvatar');
-      console.log('AVATAR: ' + avatar);
-      document.getElementById("status_avatar").src = avatar;
+console.log('COOKIE: Поиск имени пользователя');
+var name = Cookies.get('selectedUserName');
+console.log('NAME: ' + name);
+document.getElementById("status_name").innerHTML = name;
 
-      //GetPosts();      
-    </script>
-    <!--русскоязычная локализация SDK-->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
+console.log('COOKIE: Поиск аватара пользователя');
+var avatar = Cookies.get('selectedUserAvatar');
+console.log('AVATAR: ' + avatar);
+document.getElementById("status_avatar").src = avatar;
+
+// запишем ссылочку на пост от пользователя
+var link = document.getElementById("instagram_link").placeholder;
+console.log("LINK: " + link);
+// парсим данные по лайкам (юзаем готовую либу)
+if (link == "undefined")
+{
+  alert('Укажите ссылку на пост!');
+}
+else
+{
+  var response = fetch(link);
+  console.log(responce);
+  if (responce.ok)
+  {
+    console.log("SUCCESS of JSON");
+    var json = responce.json();
+  }
+  else
+  {
+    alert("ERROR of FETCH");
+  }
+}
+</script>
+<!--русскоязычная локализация SDK-->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
 </body>
 </html>
