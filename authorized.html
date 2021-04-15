@@ -46,17 +46,21 @@
   // Парсим лайки
   function Parse()
   {
+    console.log("PARSING: START");
     // запишем ссылочку на пост от пользователя
-    var link = document.getElementById("instagram_link").placeholder;
-    if (link == "undefined")
+    var link = document.getElementById("instagram_link").value;
+    console.log(link);
+    if (link == "")
     {
+      console.log("ERROR OF PARSING");
       alert('Укажите ссылку на пост!');
     }
     else
     {
+      console.log("PARSING: REDIRECT");
       // переходим на страницу поста
       window.location.href = link;
-      //document.getElementsByClassName('zV_Nj')[0].click();
+      document.getElementsByClassName('zV_Nj')[0].click();
     }
   }
   // Проверим, есть ли в куках id аккаунта
@@ -112,7 +116,7 @@
         <div class="adress_input">
           <!-- Для ссылки -->
           <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="instagram_link">
-          <input type="submit" value="Начать" onclick="Parse()">
+          <div onclick="Parse()">Начать</div>
         </div>
         <!-- Переключатели -->
         <div class="radio_checkbox_items">
