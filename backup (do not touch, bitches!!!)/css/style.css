@@ -78,7 +78,7 @@ input::placeholder{
     color:#fff;
     font-weight: normal;
 }
-.adress_input input[type=submit]{
+.adress_input div{
     border: none;
     -webkit-appearance: none;
     outline: none;
@@ -90,7 +90,7 @@ input::placeholder{
     color:#D6468E;
     cursor: pointer;
 }
-.adress_input input[type=submit]:hover{
+.adress_input div:hover{
     transition: 0.5s;
     background: #D6468E;
     color:white
@@ -470,7 +470,7 @@ progress::-moz-progress-bar {
         width: 100%;
         font-size: 3.7vw;
     }
-    .adress_input input[type=submit] {
+    .adress_input div {
         font-size: 4vw;
     }
     .adress_input {

@@ -46,26 +46,21 @@
   // Парсим лайки
   function Parse()
   {
+    console.log("PARSING: START");
     // запишем ссылочку на пост от пользователя
-    var link = document.getElementById("instagram_link").placeholder;
-    // парсим данные по лайкам (юзаем готовую либу)
-    if (link == "undefined")
+    var link = document.getElementById("instagram_link").value;
+    console.log(link);
+    if (link == "")
     {
+      console.log("ERROR OF PARSING");
       alert('Укажите ссылку на пост!');
     }
     else
     {
-      var response = fetch(link);
-      console.log(responce);
-      if (responce.ok)
-      {
-        console.log("SUCCESS of JSON");
-        var json = responce.json();
-      }
-      else
-      {
-        alert("ERROR of FETCH");
-      }
+      console.log("PARSING: REDIRECT");
+      // переходим на страницу поста
+      window.location.href = link;
+      document.getElementsByClassName('zV_Nj')[0].click();
     }
   }
   // Проверим, есть ли в куках id аккаунта
@@ -120,8 +115,8 @@
       <form action="" class="adressform">
         <div class="adress_input">
           <!-- Для ссылки -->
-          <input type="text" placeholder="https://www.instagram.com/p/CNoya4Vgzs9/?igshid=1bl0wh7n5mc9l" name="adress" id="instagram_link">
-          <input type="submit" value="Начать" onclick="Parse()">
+          <input type="text" placeholder="Введите ссылку на пост..." name="adress" id="instagram_link">
+          <div onclick="Parse()">Начать</div>
         </div>
         <!-- Переключатели -->
         <div class="radio_checkbox_items">
@@ -167,29 +162,6 @@ console.log('COOKIE: Поиск аватара пользователя');
 var avatar = Cookies.get('selectedUserAvatar');
 console.log('AVATAR: ' + avatar);
 document.getElementById("status_avatar").src = avatar;
-
-// запишем ссылочку на пост от пользователя
-var link = document.getElementById("instagram_link").placeholder;
-console.log("LINK: " + link);
-// парсим данные по лайкам (юзаем готовую либу)
-if (link == "undefined")
-{
-  alert('Укажите ссылку на пост!');
-}
-else
-{
-  var response = fetch(link);
-  console.log(responce);
-  if (responce.ok)
-  {
-    console.log("SUCCESS of JSON");
-    var json = responce.json();
-  }
-  else
-  {
-    alert("ERROR of FETCH");
-  }
-}
 </script>
 <!--русскоязычная локализация SDK-->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js"></script>
