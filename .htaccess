@@ -1,2 +1,3 @@
 PassengerEnabled On
 PassengerPython /home/g/gldmeister/zandau.kz/public_html/venv_django/bin/python
+Redirect 301 /index.html /instaway/core/templates/insta/main.html
