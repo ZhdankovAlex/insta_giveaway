@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="{% static "css/styles.css" %}" />
+  <title>Обработка</title>
+</head>
+<body class="container">
+  <form method="POST">
+    {% csrf_token %}
+    <div>
+      Ссылка на пост с розыгрышем:
+      <p>
+        {{ url }}
+      </p>
+      <div>
+        Выбираем победителя из:
+        {% if comment %}
+        <p>
+          Комментариев
+        </p>
+        {% elif author %}
+        <p>
+          Авторов
+        </p>
+        {% elif like %}
+        <p>
+          Лайков
+        </p>
+        {% elif hashtag %}
+        <p>
+          Хэштегов
+        </p>
+        {% else %}
+        <p>
+          Выберите параметры определения победителя!
+        </p>
+        {% endif %}
+        {% if user_info %}
+        <div>
+          Информация об авторе поста:
+          <div>
+            {{ user_info }}
+          </div>
+        </div>
+        {% if result %}
+        <ul>
+          Список пользователей, из которых выберем победителя:
+          {% for person in result %}
+          <li>
+            {{ person }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+</body>
+</html>

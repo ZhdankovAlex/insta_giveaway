@@ -5,10 +5,10 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jrv=ma*(1077h5ci!^v2vns49oy+6#9$y2%@vyp((#&4nlf0dx'
+SECRET_KEY = 'django-insecure-d7c_f9^n_izxafjb+d3v#8ud28y9evb5y)y+rmrxim=stgsdl%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # TODO : TURN TO FALSE!
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -57,6 +57,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'instaway.wsgi.application'
 
+
 # Database
 DATABASES = {
     'default': {
@@ -64,6 +65,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -80,6 +82,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'

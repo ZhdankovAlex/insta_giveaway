@@ -1,35 +1,54 @@
 from django.shortcuts import render, redirect
 from django.http import *
-from instabot import Bot
+from instabot import *
+from .forms import *
 
 def index(request):
-    return render(request, "index.html")
-
-def main(request):
-
-    username = request.GET.get("name", "Undefined user")
-    profile_icon = request.GET.get("avatar", "user.jpg")
-    data = {"profile_icon": profile_icon, "username": username}
-    return render(request, "main.html", context=data)
-
-# статусные коды
-def m304(request):
-    return HttpResponseNotModified()
-
-def m400(request):
-    return HttpResponseBadRequest("<h2>Bad Request</h2>")
-
-def m403(request):
-    return HttpResponseForbidden("<h2>Forbidden</h2>")
-
-def m404(request):
-    return HttpResponseNotFound("<h2>Not Found</h2>")
-
-def m405(request):
-    return HttpResponseNotAllowed("<h2>Method is not allowed</h2>")
-
-def m410(request):
-    return HttpResponseGone("<h2>Content is no longer here</h2>")
-
-def m500(request):
-    return HttpResponseServerError("<h2>Something is wrong</h2>")
+    if request.method == "POST":
+        postForm = PostForm(request.POST)
+        if postForm.is_valid():
+            url = postForm.cleaned_data["url"]
+            comment = postForm.cleaned_data["comment"]
+            author = postForm.cleaned_data["author"]
+            like = postForm.cleaned_data["like"]
+            hashtag = postForm.cleaned_data["hashtag"]
+            data = {"url": url,
+                    "comment": comment,
+                    "author": author,
+                    "like": like,
+                    "hashtag": hashtag}
+            # запускаем работу с instabot
+            bot = Bot()
+            # здесь указываем логин и пароль от НАШЕГО аккаунта insta
+            INST_USERNAME = "zamada.kz"
+            INST_PASSWORD = "Zamada2021$"
+            bot.login(username = INST_USERNAME,  password = INST_PASSWORD)
+            user_id = bot.get_user_id_from_username("lego")
+            user_info = bot.get_user_info(user_id)
+            data["user_info"] = user_info['biography']
+            #media_link = url
+            #media_pk = bot.get_media_id_from_link(media_link)
+            # здесь будем хранить итоговый список
+            #result = []
+            # получаем список лайкнувших
+            #if (like): # по умолчанию имеем неизменяемый флаг True
+            #    users_liked = bot.get_media_likers(media_pk)
+            #    result.append(users_liked)
+            # получаем список всех комментариев
+            #if (comment):
+            #    all_comments = bot.get_media_comments_all(media_pk)
+            #    result.append(all_comments)
+            # получаем список авторов
+            #elif (author):
+            #    all_comments = bot.get_media_comments_all(media_pk)
+            #    authors = list(set(all_comments))
+            #    result.append(authors)
+            # получаем список хэштегов
+            #----------------------------------------------
+            #data["result"] = result
+            return render(request, "result.html", context=data)
+        else:
+            return HttpResponse("Неверные входные данные")
+    else:
+        postForm = PostForm()
+        return render(request, "index.html", {"form": postForm})
